@@ -24,7 +24,9 @@
     "wyhash": "^1.0.0"
   },
   "dependencies": {
-    "@phala/wapo-env": "^0.9.1",
+    "@ethsign/sp-sdk": "^0.7.2",
+    "@phala/wapo-env": "^0.9.4",
+    "@zkpass/transgate-js-sdk": "^0.2.0",
     "viem": "^2.20.0"
   }
 }

@@ -12,6 +12,7 @@ import {
     parseGwei
 } from 'viem'
 import { baseSepolia } from 'viem/chains'
+import { SignProtocolClient, SpMode, EvmChains } from '@ethsign/sp-sdk'
 
 function bigIntReplacer(_key: string, value: any): any {
     return typeof value === 'bigint' ? value.toString() : value;
@@ -99,7 +100,23 @@ async function GET(req: Request): Promise<Response> {
     let data = (queries.data) ? queries.data[0] as string : ''
     let result = {};
     try {
-        if (getType == 'sendTx') {
+        if (getType == 'attest') {
+            const client = new SignProtocolClient(SpMode.OnChain, {
+                chain: EvmChains.baseSepolia,
+                account, // Optional, depending on environment
+            });
+            console.log('Creating Attestation...')
+            const res = await client.createAttestation({
+                schemaId: "0x156",
+                data: {
+                    contractDetails: "0x4e4af2a21ebf62850fD99Eb6253E1eFBb56098cD",
+                    signer: account.address
+                },
+                indexingValue: account.address.toLowerCase()
+            });
+            console.log(res)
+            result = res
+        } else if (getType == 'sendTx') {
             result = (queries.to && queries.gweiAmount) ?
               await sendTransaction(account, queries.to[0] as Address, queries.gweiAmount[0]) :
               { message: 'Missing query [to] or [gweiAmount] in URL'}
